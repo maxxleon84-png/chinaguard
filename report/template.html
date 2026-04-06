@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ report_type }} — ChinaGuard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ── Title page ── -->
+    <div class="title-page">
+        <div class="logo">ChinaGuard</div>
+        <div class="subtitle">Юридическая проверка контрактов с Китаем</div>
+        <div class="report-title">{{ report_type }}</div>
+        <div class="report-meta">
+            <span>Отчёт № {{ report_number }}</span>
+            <span>{{ date }}</span>
+        </div>
+    </div>
+
+    <!-- ── Subject info ── -->
+    <h2 class="section-heading">Объект проверки</h2>
+    <div class="subject-info">
+        <p><span class="label">Предмет:</span> {{ subject }}</p>
+        <p><span class="label">Тип документа:</span> {{ doc_type }}</p>
+        <p><span class="label">Описание:</span> {{ description }}</p>
+    </div>
+
+    <!-- ── Risks ── -->
+    {% if risks %}
+    <h2 class="section-heading">Выявленные риски</h2>
+    {% for risk in risks %}
+    <div class="risk-card {{ risk.level }}">
+        <div class="risk-header">
+            <h3 class="risk-title">{{ risk.title }}</h3>
+            <span class="risk-badge {{ risk.level }}">{{ risk.level_label }}</span>
+        </div>
+        <div class="risk-article">{{ risk.article }}</div>
+        <div class="risk-description">{{ risk.description }}</div>
+        <div class="risk-recommendation">{{ risk.recommendation }}</div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- ── Comparative analysis ── -->
+    {% if comparisons %}
+    <h2 class="section-heading">Сравнительный анализ</h2>
+    <table class="comparison-table">
+        <thead>
+            <tr>
+                <th>Тема</th>
+                <th>Китай (КНР)</th>
+                <th>Россия (РФ)</th>
+                <th>Вывод</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in comparisons %}
+            <tr>
+                <td>{{ item.topic }}</td>
+                <td>{{ item.china }}</td>
+                <td>{{ item.russia }}</td>
+                <td>{{ item.conclusion }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <!-- ── Recommendations ── -->
+    {% if recommendations %}
+    <h2 class="section-heading">Рекомендации</h2>
+    <div class="recommendation-block">
+        <ul>
+            {% for rec in recommendations %}
+            <li>{{ rec }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- ── Footer ── -->
+    <div class="report-footer">
+        <p>Подготовлено сервисом ChinaGuard</p>
+        <p class="disclaimer">
+            Данный отчёт носит информационный характер и не является юридической консультацией.
+            Для принятия решений рекомендуется обратиться к квалифицированному юристу.
+        </p>
+    </div>
+
+</body>
+</html>
