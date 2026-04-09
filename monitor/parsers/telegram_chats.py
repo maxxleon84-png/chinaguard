@@ -17,14 +17,11 @@ MONITORED_CHATS = [
     "daoimportera",           # Дао Импортёра (5.8K)
 ]
 
-client = TelegramClient(
-    "monitor_session",
-    TELEGRAM_API_ID,
-    TELEGRAM_API_HASH,
-)
+client = None
 
 
 def setup_telegram_listener(on_match_callback):
+    global client
     if not TELEGRAM_API_ID or not TELEGRAM_API_HASH:
         print("Telethon: API_ID/API_HASH not set, Telegram monitoring disabled")
         return None
@@ -32,6 +29,12 @@ def setup_telegram_listener(on_match_callback):
     if not MONITORED_CHATS:
         print("Telethon: no chats to monitor, skipping")
         return None
+
+    client = TelegramClient(
+        "monitor_session",
+        TELEGRAM_API_ID,
+        TELEGRAM_API_HASH,
+    )
 
     @client.on(events.NewMessage(chats=MONITORED_CHATS))
     async def handler(event):
