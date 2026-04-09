@@ -42,7 +42,7 @@ def setup_telegram_listener(on_match_callback):
         if not text or len(text) < 20:
             return
 
-        keyword = match_keywords(text)
+        keyword = match_keywords(text, platform="telegram")
         if keyword:
             chat = await event.get_chat()
             chat_name = getattr(chat, "title", "Telegram")

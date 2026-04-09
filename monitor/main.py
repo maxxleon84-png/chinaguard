@@ -23,16 +23,18 @@ async def check_platforms():
     for parser_fn in ALL_PARSERS:
         try:
             posts = await parser_fn()
-            log.info(f"{parser_fn.__name__}: found {len(posts)} matches")
+            new_count = 0
+            skipped = 0
 
             for post in posts:
                 if await post_exists(post.url):
+                    skipped += 1
                     continue
 
-                draft = await generate_draft(post.text)
-
                 from keywords import match_keywords
-                keyword = match_keywords(post.text) or "—"
+                keyword = match_keywords(post.text, platform=post.platform) or "—"
+
+                draft = await generate_draft(post.text)
 
                 post_id = await save_post(
                     platform=post.platform,
@@ -50,7 +52,11 @@ async def check_platforms():
                     draft=draft,
                 )
 
+                new_count += 1
+                log.info(f"  NEW: {post.title[:60]} [{keyword}]")
                 await asyncio.sleep(1)
+
+            log.info(f"{parser_fn.__name__}: {len(posts)} matches, {new_count} new, {skipped} skipped")
 
         except Exception as e:
             log.error(f"Error in {parser_fn.__name__}: {e}")

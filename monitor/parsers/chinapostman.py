@@ -37,7 +37,7 @@ async def parse_chinapostman() -> list[ParsedPost]:
         snippet = snippet_el.get_text(strip=True)[:500] if snippet_el else ""
         full_text = f"{title} {snippet}"
 
-        keyword = match_keywords(full_text)
+        keyword = match_keywords(full_text, platform="chinapostman")
         if keyword:
             results.append(ParsedPost(
                 platform="chinapostman",
