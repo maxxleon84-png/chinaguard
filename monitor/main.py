@@ -98,8 +98,12 @@ async def main():
 
     telethon_client = setup_telegram_listener(on_telegram_match)
     if telethon_client:
-        await telethon_client.start()
-        log.info("Telethon: connected to Telegram chats")
+        try:
+            await telethon_client.start()
+            log.info("Telethon: connected to Telegram chats")
+        except Exception as e:
+            log.warning(f"Telethon: failed to start ({e}), running without Telegram monitoring")
+            telethon_client = None
 
     await asyncio.gather(
         scheduler(),
