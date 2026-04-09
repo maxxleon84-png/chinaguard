@@ -1,0 +1,6 @@
+aiogram==3.4.1
+aiosqlite==0.20.0
+aiohttp==3.9.5
+beautifulsoup4==4.12.3
+feedparser==6.0.11
+Telethon==1.36.0
