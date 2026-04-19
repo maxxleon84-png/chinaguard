@@ -103,11 +103,21 @@ async def cmd_resume(message: Message):
 async def cmd_keywords(message: Message):
     if message.from_user.id != ADMIN_ID:
         return
-    from keywords import KEYWORDS
-    chunks = [KEYWORDS[i:i+15] for i in range(0, len(KEYWORDS), 15)]
-    for chunk in chunks:
-        text = "\n".join(f"• {kw}" for kw in chunk)
-        await message.answer(text)
+    from keywords import KEYWORDS_EXACT, KEYWORDS_BROAD, BROAD_PLATFORMS
+
+    await message.answer(
+        f"🎯 Точные триггеры ({len(KEYWORDS_EXACT)}) — все площадки:"
+    )
+    for i in range(0, len(KEYWORDS_EXACT), 15):
+        chunk = KEYWORDS_EXACT[i:i+15]
+        await message.answer("\n".join(f"• {kw}" for kw in chunk))
+
+    await message.answer(
+        f"🔍 Широкие триггеры ({len(KEYWORDS_BROAD)}) — только {', '.join(sorted(BROAD_PLATFORMS))}:"
+    )
+    for i in range(0, len(KEYWORDS_BROAD), 15):
+        chunk = KEYWORDS_BROAD[i:i+15]
+        await message.answer("\n".join(f"• {kw}" for kw in chunk))
 
 
 def is_paused() -> bool:

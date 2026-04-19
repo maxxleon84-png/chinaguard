@@ -2,7 +2,7 @@ import asyncio
 import logging
 import sys
 
-from config import MONITOR_BOT_TOKEN, CHECK_INTERVAL, TELEGRAM_API_ID
+from config import MONITOR_BOT_TOKEN, CHECK_INTERVAL
 from db import init_db, post_exists, save_post
 from ai import generate_draft
 from bot import bot, dp, send_notification, is_paused

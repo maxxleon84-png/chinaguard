@@ -52,7 +52,13 @@ def setup_telegram_listener(on_match_callback):
         if keyword:
             chat = await event.get_chat()
             chat_name = getattr(chat, "title", "Telegram")
-            msg_link = f"https://t.me/c/{chat.id}/{event.message.id}"
+            username = getattr(chat, "username", None)
+            if username:
+                msg_link = f"https://t.me/{username}/{event.message.id}"
+            else:
+                # Приватные супергруппы/каналы: убираем префикс -100 из id
+                internal_id = str(chat.id).removeprefix("-100")
+                msg_link = f"https://t.me/c/{internal_id}/{event.message.id}"
 
             await on_match_callback(
                 platform=f"telegram:{chat_name}",
