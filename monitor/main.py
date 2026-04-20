@@ -4,12 +4,8 @@ import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from config import MONITOR_BOT_TOKEN, CHECK_INTERVAL
-from db import init_db, post_exists, save_post
-from ai import generate_draft
-from bot import bot, dp, send_notification, is_paused
-from parsers import ALL_PARSERS, setup_telegram_listener
-
+# Настройка логирования — обязательно до импортов модулей, иначе они
+# успеют создать default handler и наш basicConfig будет проигнорирован.
 LOG_DIR = Path(__file__).parent / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
@@ -26,8 +22,20 @@ _file_handler.setFormatter(_formatter)
 _stream_handler = logging.StreamHandler(sys.stdout)
 _stream_handler.setFormatter(_formatter)
 
-logging.basicConfig(level=logging.INFO, handlers=[_file_handler, _stream_handler])
+# force=True перетирает любые уже установленные handlers (в том числе
+# дефолтный, который Python ставит при первом logging-вызове из импортов).
+logging.basicConfig(
+    level=logging.INFO,
+    handlers=[_file_handler, _stream_handler],
+    force=True,
+)
 log = logging.getLogger(__name__)
+
+from config import MONITOR_BOT_TOKEN, CHECK_INTERVAL  # noqa: E402
+from db import init_db, post_exists, save_post  # noqa: E402
+from ai import generate_draft  # noqa: E402
+from bot import bot, dp, send_notification, is_paused  # noqa: E402
+from parsers import ALL_PARSERS, setup_telegram_listener  # noqa: E402
 
 
 async def check_platforms():
