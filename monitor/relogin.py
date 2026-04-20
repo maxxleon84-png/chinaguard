@@ -11,6 +11,7 @@ import logging
 import sys
 
 from telethon import TelegramClient
+from telethon.network import ConnectionTcpObfuscated
 from config import TELEGRAM_API_ID, TELEGRAM_API_HASH
 
 logging.basicConfig(
@@ -44,7 +45,12 @@ async def main():
         return
 
     print("Запускаю авторизацию...", flush=True)
-    client = TelegramClient("monitor_session", TELEGRAM_API_ID, TELEGRAM_API_HASH)
+    client = TelegramClient(
+        "monitor_session",
+        TELEGRAM_API_ID,
+        TELEGRAM_API_HASH,
+        connection=ConnectionTcpObfuscated,
+    )
 
     await client.start(
         phone=ask_phone,

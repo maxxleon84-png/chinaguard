@@ -1,4 +1,5 @@
 from telethon import TelegramClient, events
+from telethon.network import ConnectionTcpObfuscated
 from keywords import match_keywords
 from config import TELEGRAM_API_ID, TELEGRAM_API_HASH
 
@@ -40,6 +41,7 @@ def setup_telegram_listener(on_match_callback):
         "monitor_session",
         TELEGRAM_API_ID,
         TELEGRAM_API_HASH,
+        connection=ConnectionTcpObfuscated,
     )
 
     @client.on(events.NewMessage(chats=MONITORED_CHATS))
