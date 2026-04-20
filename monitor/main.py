@@ -1,6 +1,8 @@
 import asyncio
 import logging
 import sys
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
 
 from config import MONITOR_BOT_TOKEN, CHECK_INTERVAL
 from db import init_db, post_exists, save_post
@@ -8,11 +10,23 @@ from ai import generate_draft
 from bot import bot, dp, send_notification, is_paused
 from parsers import ALL_PARSERS, setup_telegram_listener
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    stream=sys.stdout,
+LOG_DIR = Path(__file__).parent / "logs"
+LOG_DIR.mkdir(exist_ok=True)
+
+_formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+
+_file_handler = RotatingFileHandler(
+    LOG_DIR / "monitor.log",
+    maxBytes=5 * 1024 * 1024,
+    backupCount=5,
+    encoding="utf-8",
 )
+_file_handler.setFormatter(_formatter)
+
+_stream_handler = logging.StreamHandler(sys.stdout)
+_stream_handler.setFormatter(_formatter)
+
+logging.basicConfig(level=logging.INFO, handlers=[_file_handler, _stream_handler])
 log = logging.getLogger(__name__)
 
 
