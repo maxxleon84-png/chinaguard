@@ -105,8 +105,19 @@ async def main():
     telethon_client = setup_telegram_listener(on_telegram_match)
     if telethon_client:
         try:
-            await telethon_client.start()
-            log.info("Telethon: connected to Telegram chats")
+            await telethon_client.connect()
+            if await telethon_client.is_user_authorized():
+                log.info("Telethon: connected to Telegram chats")
+            else:
+                # start() в этом случае ушёл бы в input() и завесил процесс —
+                # выходим явно и работаем без Telegram-мониторинга.
+                log.warning(
+                    "Telethon: session expired, re-login required "
+                    "(run `python main.py` interactively to re-authorize). "
+                    "Continuing without Telegram monitoring."
+                )
+                await telethon_client.disconnect()
+                telethon_client = None
         except Exception as e:
             log.warning(f"Telethon: failed to start ({e}), running without Telegram monitoring")
             telethon_client = None
